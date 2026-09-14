@@ -3,6 +3,7 @@
 const startButton = document.getElementById("startButton")
 const stopButton = document.getElementById("stopButton")
 const statusText = document.getElementById("status")
+const transcriptionText = document.getElementById("transcription");
 
 let mediaRecorder;
 let audioChunks = [];
@@ -10,8 +11,6 @@ let audioStream;
 
 startButton.addEventListener("click", async () => {
 	
-	console.log("Start button clicked");
-
 
     try {
         audioStream = await navigator.mediaDevices.getUserMedia({
