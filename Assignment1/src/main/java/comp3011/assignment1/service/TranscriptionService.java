@@ -51,6 +51,7 @@ public class TranscriptionService {
             OpenAiTranscriptionResponse response =
                     restClient.post()
                             .uri("/v1/audio/transcriptions")
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                             .contentType(MediaType.MULTIPART_FORM_DATA)
                             .body(body)
                             .retrieve()
