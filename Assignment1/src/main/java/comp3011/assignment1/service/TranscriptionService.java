@@ -18,17 +18,16 @@ import comp3011.assignment1.model.OpenAiTranscriptionResponse;
 public class TranscriptionService {
 
     private final RestClient restClient;
+    private final StatsService statsService;
+    private final String apiKey;
 
     public TranscriptionService(
-            RestClient.Builder builder,
-            @Value("${OPENAI_API_KEY:}") String apiKey) {
+            RestClient.Builder builder, @Value("${OPENAI_API_KEY:}") String apiKey, StatsService statsService) {
 
-        restClient = builder
-                .baseUrl("https://api.openai.com")
-                .defaultHeader(
-                        HttpHeaders.AUTHORIZATION,
-                        "Bearer " + apiKey)
-                .build();
+        this.apiKey = apiKey;
+        this.statsService = statsService;
+
+        this.restClient = builder.baseUrl("https://api.openai.com").build();
     }
 
     public String transcribe(MultipartFile file) {
@@ -59,6 +58,10 @@ public class TranscriptionService {
 
             if (response == null) {
                 throw new RuntimeException("No transcription returned");
+            }
+
+            if (response.usage() != null) {
+                statsService.addUsage(response.usage().inputTokens(), response.usage().outputTokens());
             }
 
             return response.text();
